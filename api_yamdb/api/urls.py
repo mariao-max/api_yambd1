@@ -10,7 +10,6 @@ router.register('genres', GenreViewSet)
 router.register('categories', CategoryViewSet)
 router.register('titles', TitleViewSet)
 
-
 urlpatterns = [
     # Все зарегистрированные в router пути доступны в router.urls
     # Включим их в головной urls.py
