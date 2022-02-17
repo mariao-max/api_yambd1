@@ -2,8 +2,7 @@ from django.db.models import Avg
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, viewsets
 from reviews.models import Category, Genre, Title
-
-from api.serializers import (CategorySerializer, GenreSerializer,
+from api.serializers import (CategorySerializer,  GenreSerializer,
                              TitleSerializer)
 
 

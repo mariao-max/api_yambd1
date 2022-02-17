@@ -25,7 +25,7 @@ class TitleSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # Если в исходном запросе не было поля genre
         if 'genre' not in self.initial_data:
-            # То создаём запись без жанра
+            # То создаём запись без  жанра
             title = Title.objects.create(**validated_data)
             return title
 
