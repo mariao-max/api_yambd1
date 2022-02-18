@@ -1,19 +1,20 @@
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404, render
-from rest_framework import status, viewsets, filters
-from rest_framework.decorators import action, api_view
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, status, viewsets
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.db.models import Avg
-from django_filters.rest_framework import DjangoFilterBackend
-
 from reviews.models import Category, Genre, Review, Title, User
+
 from api.permissions import UserIsAdmin, UserIsAdminOrReadOnly, UserIsModerator
-from api.serializers import (CategorySerializer, CommentSerializer,
-                             GenreSerializer, ReviewSerializer,
-                             TitleSerializer, AuthSerializer, UserSerializer)
+from api.serializers import (AuthSerializer, CategorySerializer,
+                             CommentSerializer, GenreSerializer,
+                             ReviewSerializer, TitleSerializer, UserSerializer)
+
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -36,17 +37,15 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-@action(
-    detail=False,
-    methods=['post'],
-    permission_classes=(AllowAny,)
-)
+@api_view(['POST'])
+@permission_classes((AllowAny,))
 def sign_up(requset):
     serializers = AuthSerializer(data=requset.data)
     serializers.is_valid(raise_exception=True)
     email = serializers.validated_data['email']
     username = serializers.validated_data['username']
-    confirmation_code = default_token_generator.make_token(username)
+    user = get_object_or_404(User, username=username)
+    confirmation_code = default_token_generator.make_token(user)
     user, created = User.objects.get_or_create(
         **serializers.validated_data,
         confirmation_code=confirmation_code
@@ -59,11 +58,8 @@ def sign_up(requset):
     )
     return Response(serializers.data, status=status.HTTP_200_OK)
 
-@action(
-    detail=False,
-    methods=['post'],
-    permission_classes=(AllowAny,)
-)
+@api_view(['POST'])
+@permission_classes((AllowAny,))
 def get_token_for_user(requset):
     serializers = AuthSerializer(data=requset.data)
     serializers.is_valid(raise_exception=True)
@@ -74,7 +70,7 @@ def get_token_for_user(requset):
         return Response(status=status.HTTP_400_BAD_REQUEST)
     token = RefreshToken.for_user(user)
     return Response(
-        {'token': str(refresh.access_token)},
+        {'token': str(token.access_token)},
         status=status.HTTP_200_OK
     )
 

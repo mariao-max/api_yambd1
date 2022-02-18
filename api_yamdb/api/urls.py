@@ -26,6 +26,6 @@ urlpatterns = [
     # Все зарегистрированные в router пути доступны в router.urls
     # Включим их в головной urls.py
     path('v1/', include(router.urls)),
-    path('v1/auth/signup/', sign_up, name='signup'),
-    path('v1/auth/token/', get_token_for_user, name='token'),
+    path('v1/auth/signup/', sign_up),
+    path('v1/auth/token/', get_token_for_user),
 ]
