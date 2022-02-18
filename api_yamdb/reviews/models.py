@@ -32,7 +32,7 @@ class User(AbstractUser):
         max_length=254,
         unique=True
     )
-    roles = models.CharField(
+    role = models.CharField(
         verbose_name='Права доступа',
         max_length=10,
         choices=ROLES,
@@ -44,7 +44,7 @@ class User(AbstractUser):
         return self.username
     
     def is_admin(self):
-        return self.roles == 'admin' or self.is_staff or self.is_superuser
+        return self.role == 'admin' or self.is_staff or self.is_superuser
 
     def is_moderator(self):
-        return self.roles == 'moderator'
+        return self.role == 'moderator'
