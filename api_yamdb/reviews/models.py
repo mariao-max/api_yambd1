@@ -1,13 +1,38 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
-
 class User(AbstractUser):
+    ROLES = (
+        ('user', 'user'),
+        ('moderator', 'moderator'),
+        ('admin', 'admin'),
+    )
     bio = models.TextField(
-        'Биография',
+        verbose_name='Биография',
         blank=True
     )
+    confirmation_code = models.CharField(max_length=255, default='000000')
+    email = models.EmailField(
+        verbose_name='Email пользователя',
+        max_length=254,
+        unique=True
+    )
+    role = models.CharField(
+        verbose_name='Права доступа',
+        max_length=10,
+        choices=ROLES,
+        default='user'
+    )
+
+    def __str__(self):
+        return self.username
+    
+    def is_admin(self):
+        return self.role == 'admin' or self.is_staff or self.is_superuser
+
+    def is_moderator(self):
+        return self.role == 'moderator'
 
 
 class Category(models.Model):
