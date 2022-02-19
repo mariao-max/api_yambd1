@@ -43,9 +43,9 @@ $ python manage.py runserver
 
 ### Примеры работы с API для всех пользователей
 ```
-Права доступа: Доступно без токена.
-GET /api/v1/categories/ - Получение списка всех категорий
-GET /api/v1/genres/ - Получение списка всех жанров
-GET /api/v1/titles/ - Получение списка всех произведений
-GET /api/v1/titles/{title_id}/reviews/ - Получение списка всех отзывов
-GET /api/v1/titles/{title_id}/reviews/{review_id}/comments/ - Получение списка всех комментариев к отзыву
+Права доступа: Без токена.
+GET /api/v1/categories/ - Список всех категорий
+GET /api/v1/genres/ - Список всех жанров
+GET /api/v1/titles/ - Список всех произведений
+GET /api/v1/titles/{title_id}/reviews/ - Список всех отзывов
+GET /api/v1/titles/{title_id}/reviews/{review_id}/comments/ - Список всех комментариев к отзыву
