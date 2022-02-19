@@ -8,8 +8,7 @@ from rest_framework import filters, mixins, status, viewsets
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.pagination import (LimitOffsetPagination,
                                        PageNumberPagination)
-from rest_framework.permissions import (AllowAny,
-                                        IsAuthenticated,
+from rest_framework.permissions import (AllowAny, IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -33,7 +32,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=False,
-        methods=['get', 'post'],
+        methods=['get', 'patch'],
         url_path='me',
         permission_classes=(IsAuthenticated,),
         serializer_class=UserProfileSerializers
