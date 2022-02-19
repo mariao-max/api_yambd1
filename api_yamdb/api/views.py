@@ -2,7 +2,7 @@ from uuid import uuid4
 
 from django.core.mail import send_mail
 from django.db.models import Avg
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, status, viewsets
 from rest_framework.decorators import action, api_view, permission_classes
@@ -44,6 +44,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 @api_view(['POST'])
 @permission_classes((AllowAny,))
 def sign_up(requset):
@@ -62,6 +63,7 @@ def sign_up(requset):
         [f'{email}'],
     )
     return Response(serializers.data, status=status.HTTP_200_OK)
+
 
 @api_view(['POST'])
 @permission_classes((AllowAny,))

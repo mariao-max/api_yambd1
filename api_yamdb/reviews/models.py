@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
@@ -29,7 +29,7 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
-    
+
     def is_admin(self):
         return self.role == 'admin' or self.is_staff or self.is_superuser
 
