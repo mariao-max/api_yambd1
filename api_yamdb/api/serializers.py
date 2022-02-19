@@ -3,8 +3,7 @@ from uuid import uuid4
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from reviews.models import (ROLES, Category, Comment, Genre, GenreTitle,
-                            Review, Title, User)
+from reviews.models import ROLES, Category, Comment, Genre, Review, Title, User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -73,6 +72,7 @@ class SignUpSerializer(serializers.Serializer):
             )
         return data
 
+
 class AuthSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=100)
     confirmation_code = serializers.CharField(max_length=255)
@@ -133,7 +133,8 @@ class CommentSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = '__all__'
+        exclude = ('id', )
+        lookup_field = 'slug'
 
 
 class GenreSerializer(serializers.ModelSerializer):
@@ -143,33 +144,23 @@ class GenreSerializer(serializers.ModelSerializer):
         lookup_field = 'slug'
 
 
-class TitleSerializer(serializers.ModelSerializer):
-    # Уберем список жанров из словаря validated_data и сохраним его
-    genres = GenreSerializer(many=True)
+class TitleCreateSerializer(serializers.ModelSerializer):
+    category = serializers.SlugRelatedField(
+        slug_field='slug', queryset=Category.objects.all(),
+    )
+    genre = serializers.SlugRelatedField(
+        slug_field='slug', queryset=Genre.objects.all(), many=True
+    )
 
     class Meta:
-        fields = '__all__'
         model = Title
+        fields = '__all__'
 
-    def create(self, validated_data):
-        # Если в исходном запросе не было поля genre
-        if 'genre' not in self.initial_data:
-            # То создаём запись без  жанра
-            title = Title.objects.create(**validated_data)
-            return title
 
-        genres = validated_data.pop('genre')
+class TitleSerializer(serializers.ModelSerializer):
+    category = CategorySerializer()
+    genre = GenreSerializer(many=True)
 
-        # Создадим новое произведение пока без жанров, данных нам достаточно
-        title = Title.objects.create(**validated_data)
-
-        # Для каждого жанра из списка жанров
-        for genre in genres:
-            # Создадим новую запись или получим существующий экземпляр из БД
-            current_genre, status = Genre.objects.get_or_create(
-                **genre)
-            # Поместим ссылку на каждое достижение во вспомогательную таблицу
-            # Не забыв указать к какому котику оно относится
-            GenreTitle.objects.create(
-                genre=current_genre, title=title)
-        return title
+    class Meta:
+        model = Title
+        fields = '__all__'
