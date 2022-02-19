@@ -28,7 +28,7 @@ class UserViewSet(viewsets.ModelViewSet):
     lookup_field = 'username'
     filter_backends = (filters.SearchFilter,)
     search_fields = ('username',)
-'''
+
     @action(
         detail=False,
         methods=['get', 'patch'],
@@ -42,12 +42,17 @@ class UserViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(user)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            serializer = self.get_serializer(user, data=request.data, partial=True)
+            serializer = self.get_serializer(
+                user,
+                data=request.data,
+                partial=True
+            )
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
-'''
 
+
+"""
 @api_view(['POST'])
 @permission_classes((AllowAny,))
 def sign_up(requset):
@@ -66,6 +71,7 @@ def sign_up(requset):
         [f'{email}'],
     )
     return Response(serializers.data, status=status.HTTP_200_OK)
+"""
 
 
 @api_view(['POST'])
