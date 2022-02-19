@@ -23,11 +23,11 @@ $ pip install -r requirements.txt
 
 $ python manage.py migrate 
 
-Создайте суперпользователя:
+- Создайте суперпользователя:
 
 $ python manage.py createsuperuser
 
-Запустите проект:
+- Запустите проект:
 
 $ python manage.py runserver
 
