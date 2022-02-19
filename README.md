@@ -11,24 +11,24 @@
 ### Запуск проекта в dev-режиме
 - Клонируйте репозиторий и перейдити в него в командной строке.
 - Установите и активируйте виртуальное окружение:
-```
+
 $ venv/Scripts/activate
 $ python -m pip install --upgrade pip
-```
+
 - Установите все зависимости из файла requirements.txt
-```
+
 $ pip install -r requirements.txt
-```
+
 - Выполните миграции:
-```
+
 $ python manage.py migrate 
-```
+
 Создайте суперпользователя:
-```
+
 $ python manage.py createsuperuser
-```
+
 Запустите проект:
-```
+
 $ python manage.py runserver
 
 ### Техническое  Описание проекта
