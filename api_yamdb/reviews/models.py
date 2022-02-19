@@ -1,13 +1,15 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
+
+ROLES = (
+    ('user', 'user'),
+    ('moderator', 'moderator'),
+    ('admin', 'admin'),
+)
+
 
 class User(AbstractUser):
-    ROLES = (
-        ('user', 'user'),
-        ('moderator', 'moderator'),
-        ('admin', 'admin'),
-    )
     bio = models.TextField(
         verbose_name='Биография',
         blank=True

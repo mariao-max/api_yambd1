@@ -1,13 +1,14 @@
-from django.contrib.auth.tokens import default_token_generator
+from uuid import uuid4
+
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from reviews.models import (Category, Comment, Genre, GenreTitle, Review,
-                            Title, User)
+from reviews.models import (ROLES, Category, Comment, Genre, GenreTitle,
+                            Review, Title, User)
 
 
 class UserSerializer(serializers.ModelSerializer):
-    role = serializers.CharField(read_only=True)
+    role = serializers.ChoiceField(choices=ROLES, default='user')
 
     class Meta:
         model = User
@@ -15,12 +16,13 @@ class UserSerializer(serializers.ModelSerializer):
             'username',
             'email',
             'role',
-            'bio'
+            'bio',
+            'first_name',
+            'last_name'
         )
 
     def create(self, validated_data):
-        email = validated_data['email']
-        confirmation_code = default_token_generator.make_token(email)
+        confirmation_code = uuid4()
         user = User.objects.create(
             **validated_data,
             confirmation_code=confirmation_code
@@ -40,18 +42,32 @@ class UserSerializer(serializers.ModelSerializer):
         if email is None or email == '':
             raise serializers.ValidationError('Обязательное поле')
         return email
-    
+
+
+class UserProfileSerializers(UserSerializer):
+    role = serializers.CharField(read_only=True)
+
+
+class SignUpSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    username = serializers.CharField(max_length=150)
+
+    def validate_username(self, name):
+        if name == 'me':
+            raise serializers.ValidationError(
+                'Не допустимое имя пользователя'
+            )
+        return name
+
     def validate(self, data):
         username = data.get('username')
         email = data.get('email')
-        valid_username = User.objects.filter(username=username)
-        valid_email = User.objects.filter(email=email)
 
-        if valid_username.exists() and valid_username.email != email:
+        if User.objects.filter(username=username).exists():
             raise serializers.ValidationError(
                 'Пользователь с таким именем уже существует'
             )
-        if valid_email.exists() and valid_email.username != username:
+        if User.objects.filter(email=email).exists():
             raise serializers.ValidationError(
                 'Пользователь с такой почтой уже существует'
             )
