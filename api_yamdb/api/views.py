@@ -4,6 +4,7 @@ from django.db.models import Avg
 from django.shortcuts import get_object_or_404, render
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status, viewsets
+from rest_framework.decorators import action, api_view
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -40,7 +41,7 @@ class UserViewSet(viewsets.ModelViewSet):
 @api_view(['POST'])
 @permission_classes((AllowAny,))
 def sign_up(requset):
-    serializers = AuthSerializer(data=requset.data)
+    serializers = UserSerializer(data=requset.data)
     serializers.is_valid(raise_exception=True)
     email = serializers.validated_data['email']
     username = serializers.validated_data['username']
