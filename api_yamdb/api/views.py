@@ -43,6 +43,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 @api_view(['POST'])
 @permission_classes((AllowAny,))
 def sign_up(requset):
@@ -61,6 +62,7 @@ def sign_up(requset):
         [f'{email}'],
     )
     return Response(serializers.data, status=status.HTTP_200_OK)
+
 
 @api_view(['POST'])
 @permission_classes((AllowAny,))
