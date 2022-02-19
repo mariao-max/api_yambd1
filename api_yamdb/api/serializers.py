@@ -2,23 +2,25 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from reviews.models import User, Category, Comment, Genre, Review, Title, GenreTitle
+from reviews.models import (Category, Comment, Genre, GenreTitle, Review,
+                            Title, User)
+
 
 class UserSerializer(serializers.ModelSerializer):
-    roles = serializers.CharField(read_only=True)
+    role = serializers.CharField(read_only=True)
 
     class Meta:
         model = User
         fields = (
             'username',
             'email',
-            'roles',
+            'role',
             'bio'
         )
 
     def create(self, validated_data):
         email = validated_data['email']
-        confirmation_code = default_token_generator.make_token(self.user)
+        confirmation_code = default_token_generator.make_token(email)
         user = User.objects.create(
             **validated_data,
             confirmation_code=confirmation_code

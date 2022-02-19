@@ -1,19 +1,20 @@
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404, render
-from rest_framework import status, viewsets, filters
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action, api_view
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.db.models import Avg
-from django_filters.rest_framework import DjangoFilterBackend
-
 from reviews.models import Category, Genre, Review, Title, User
+
 from api.permissions import UserIsAdmin, UserIsAdminOrReadOnly, UserIsModerator
-from api.serializers import (CategorySerializer, CommentSerializer,
-                             GenreSerializer, ReviewSerializer,
-                             TitleSerializer, AuthSerializer, UserSerializer)
+from api.serializers import (AuthSerializer, CategorySerializer,
+                             CommentSerializer, GenreSerializer,
+                             ReviewSerializer, TitleSerializer, UserSerializer)
+
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -42,7 +43,7 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes=(AllowAny,)
 )
 def sign_up(requset):
-    serializers = AuthSerializer(data=requset.data)
+    serializers = UserSerializer(data=requset.data)
     serializers.is_valid(raise_exception=True)
     email = serializers.validated_data['email']
     username = serializers.validated_data['username']
