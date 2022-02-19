@@ -1,10 +1,10 @@
-from django.contrib.auth.tokens import default_token_generator
+from uuid import uuid4
+
 from django.core.mail import send_mail
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404, render
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status, viewsets
-from rest_framework.decorators import action, api_view
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -14,7 +14,9 @@ from reviews.models import Category, Genre, Review, Title, User
 from api.permissions import UserIsAdmin, UserIsAdminOrReadOnly, UserIsModerator
 from api.serializers import (AuthSerializer, CategorySerializer,
                              CommentSerializer, GenreSerializer,
-                             ReviewSerializer, TitleSerializer, UserSerializer)
+                             ReviewSerializer, SignUpSerializer,
+                             TitleSerializer, UserProfileSerializers,
+                             UserSerializer)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -30,6 +32,7 @@ class UserViewSet(viewsets.ModelViewSet):
         methods=['get', 'post'],
         url_path='me',
         permission_classes=(IsAuthenticated,),
+        serializer_class=UserProfileSerializers
     )
     def set_profile(self, request, pk=None):
         user = get_object_or_404(User, pk=request.user.id)
@@ -41,12 +44,10 @@ class UserViewSet(viewsets.ModelViewSet):
 @api_view(['POST'])
 @permission_classes((AllowAny,))
 def sign_up(requset):
-    serializers = UserSerializer(data=requset.data)
+    serializers = SignUpSerializer(data=requset.data)
     serializers.is_valid(raise_exception=True)
     email = serializers.validated_data['email']
-    username = serializers.validated_data['username']
-    user = get_object_or_404(User, username=username)
-    confirmation_code = default_token_generator.make_token(user)
+    confirmation_code = uuid4()
     user, created = User.objects.get_or_create(
         **serializers.validated_data,
         confirmation_code=confirmation_code
