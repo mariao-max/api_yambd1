@@ -174,6 +174,6 @@ class TitleViewSet(viewsets.ModelViewSet):
         return TitleSerializer
 
     def get_permissions(self):
-        if self.action == 'list':
+        if self.action == 'list' or self.action == 'retrieve':
             return (UserIsAdminOrReadOnly(),)
         return super().get_permissions()
