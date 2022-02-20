@@ -149,7 +149,7 @@ class CategoryViewSet(CreateDestroyListViewSet):
 class GenreViewSet(CreateDestroyListViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    permission_classes = (UserIsAdminOrReadOnly,)
+    permission_classes = (UserIsAdmin,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
@@ -165,7 +165,7 @@ class TitleViewSet(viewsets.ModelViewSet):
         rating=Avg('reviews__score')
     ).all()
     serializer_class = TitleSerializer
-    permission_classes = (UserIsAdminOrReadOnly,)
+    permission_classes = (UserIsAdmin,)
     filterset_class = TitleFilter
 
     def get_serializer_class(self):
