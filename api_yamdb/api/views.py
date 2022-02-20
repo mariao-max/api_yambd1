@@ -103,7 +103,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     
     def get_permissions(self):
         if self.action == 'list' or self.action == 'retrieve':
-            return (IsAuthenticatedOrReadOnly(),)
+            return (AllowAny(),)
         return super().get_permissions()
 
 
@@ -121,7 +121,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action == 'list' or self.action == 'retrieve':
-            return (IsAuthenticatedOrReadOnly(),)
+            return (AllowAny(),)
         return super().get_permissions()
 
 
@@ -142,7 +142,7 @@ class CategoryViewSet(CreateDestroyListViewSet):
 
     def get_permissions(self):
         if self.action == 'list':
-            return (IsAuthenticatedOrReadOnly(),)
+            return (AllowAny(),)
         return super().get_permissions()
 
 
@@ -156,7 +156,7 @@ class GenreViewSet(CreateDestroyListViewSet):
 
     def get_permissions(self):
         if self.action == 'list':
-            return (IsAuthenticatedOrReadOnly(),)
+            return (AllowAny(),)
         return super().get_permissions()
 
 
@@ -175,5 +175,5 @@ class TitleViewSet(viewsets.ModelViewSet):
     
     def get_permissions(self):
         if self.action == 'list':
-            return (IsAuthenticatedOrReadOnly(),)
+            return (AllowAny(),)
         return super().get_permissions()
