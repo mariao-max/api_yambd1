@@ -126,7 +126,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    author = SlugRelatedField(
+    author = serializers.SlugRelatedField(
         default=serializers.CurrentUserDefault(),
         read_only=True,
         slug_field='username'
