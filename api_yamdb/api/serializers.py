@@ -111,7 +111,6 @@ class ReviewSerializer(serializers.ModelSerializer):
                     author=author
             ).exists():
                 raise ValidationError('Извините, возможен только один отзыв')
-
         return data
 
     class Meta:
@@ -151,7 +150,6 @@ class TitleCreateSerializer(serializers.ModelSerializer):
     genre = serializers.SlugRelatedField(
         slug_field='slug', queryset=Genre.objects.all(), many=True
     )
-    rating = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Title
@@ -161,7 +159,8 @@ class TitleCreateSerializer(serializers.ModelSerializer):
 class TitleSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     genre = GenreSerializer(many=True)
-
+    rating = serializers.IntegerField(read_only=True)
+    
     class Meta:
         model = Title
         fields = '__all__'
