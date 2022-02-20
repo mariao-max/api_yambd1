@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import filters, mixins, status, viewsets
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import (AllowAny, IsAuthenticated,
-                                        IsAuthenticatedOrReadOnly, ReadOnly)
+                                        IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from reviews.models import Category, Genre, Review, Title, User
@@ -103,7 +103,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     
     def get_permissions(self):
         if self.action == 'list' or self.action == 'retrieve':
-            return (ReadOnly(),)
+            return (IsAuthenticatedOrReadOnly(),)
         return super().get_permissions()
 
 
@@ -121,7 +121,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action == 'list' or self.action == 'retrieve':
-            return (ReadOnly(),)
+            return (IsAuthenticatedOrReadOnly(),)
         return super().get_permissions()
 
 
@@ -142,7 +142,7 @@ class CategoryViewSet(CreateDestroyListViewSet):
 
     def get_permissions(self):
         if self.action == 'list':
-            return (ReadOnly(),)
+            return (IsAuthenticatedOrReadOnly(),)
         return super().get_permissions()
 
 
@@ -156,7 +156,7 @@ class GenreViewSet(CreateDestroyListViewSet):
 
     def get_permissions(self):
         if self.action == 'list':
-            return (ReadOnly(),)
+            return (IsAuthenticatedOrReadOnly(),)
         return super().get_permissions()
 
 
@@ -175,5 +175,5 @@ class TitleViewSet(viewsets.ModelViewSet):
     
     def get_permissions(self):
         if self.action == 'list':
-            return (ReadOnly(),)
+            return (IsAuthenticatedOrReadOnly(),)
         return super().get_permissions()
