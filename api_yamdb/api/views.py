@@ -99,7 +99,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
         serializer.save(author=self.request.user, title=title)
-    
+
     def get_permissions(self):
         if self.action == 'list' or self.action == 'retrieve':
             return (AllowAny(),)
@@ -171,7 +171,7 @@ class TitleViewSet(viewsets.ModelViewSet):
         if self.request.method in ('POST', 'PATCH',):
             return TitleCreateSerializer
         return TitleSerializer
-    
+
     def get_permissions(self):
         if self.action == 'list':
             return (AllowAny(),)
