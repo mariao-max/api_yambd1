@@ -102,7 +102,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action == 'list' or self.action == 'retrieve':
-            return (UserIsAdminOrReadOnly(),)
+            return (AllowAny(),)
         return super().get_permissions()
 
 
@@ -120,7 +120,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action == 'list' or self.action == 'retrieve':
-            return (UserIsAdminOrReadOnly(),)
+            return (AllowAny(),)
         return super().get_permissions()
 
 
