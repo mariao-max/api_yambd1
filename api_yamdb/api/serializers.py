@@ -160,7 +160,7 @@ class TitleSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     genre = GenreSerializer(many=True)
     rating = serializers.IntegerField(read_only=True)
-    
+
     class Meta:
         model = Title
         fields = '__all__'
