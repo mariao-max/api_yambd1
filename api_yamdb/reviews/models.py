@@ -56,7 +56,7 @@ class Title(models.Model):
     description = models.TextField(null=True, blank=True)
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL,
-        related_name="titles", blank=True, null=True
+        related_name='titles', blank=True, null=True
     )
     genre = models.ManyToManyField(
         Genre, through='GenreTitle', related_name='titles')
@@ -85,7 +85,7 @@ class Review(models.Model):
                                 ])
     title = models.ForeignKey(
         Title, on_delete=models.CASCADE,
-        related_name="reviews",
+        related_name='reviews',
         verbose_name='произведение'
     )
 
