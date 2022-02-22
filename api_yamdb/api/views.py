@@ -58,17 +58,15 @@ def sign_up(requset):
     serializers.is_valid(raise_exception=True)
     email = serializers.validated_data['email']
     username = serializers.validated_data['username']
-    user = User.objects.filter(email=email, username=username)
     valid_mail = User.objects.filter(email=email)
     valid_username = User.objects.filter(username=username)
-    if user.exists():
+    if User.objects.filter(email=email, username=username).exists():
         send_mail(
             'Код для доступа к токену',
             f'{user[0].confirmation_code}',
             EMAIL_ADMIN,
             [f'{email}'],
         )
-        return Response(serializers.data, status=status.HTTP_200_OK)
     if valid_mail.exists() or valid_username.exists():
         if (
             valid_username.exists()
@@ -85,19 +83,18 @@ def sign_up(requset):
                 'Пользователь с таким username уже есть'
             )
         return Response(status=status.HTTP_400_BAD_REQUEST)
-    if not user.exists():
-        confirmation_code = uuid4()
-        user, created = User.objects.get_or_create(
-            **serializers.validated_data,
-            confirmation_code=confirmation_code
-        )
-        send_mail(
-            'Код для доступа к токену',
-            f'{user.confirmation_code}',
-            EMAIL_ADMIN,
-            [f'{email}'],
-        )
-        return Response(serializers.data, status=status.HTTP_200_OK)
+      confirmation_code = uuid4()
+      user, created = User.objects.get_or_create(
+          **serializers.validated_data,
+          confirmation_code=confirmation_code
+      )
+      send_mail(
+          'Код для доступа к токену',
+          f'{user.confirmation_code}',
+          EMAIL_ADMIN,
+          [f'{email}'],
+      )
+      return Response(serializers.data, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
