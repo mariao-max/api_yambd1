@@ -1,5 +1,6 @@
 from uuid import uuid4
 
+from api_yamdb.settings import EMAIL_ADMIN
 from django.core.mail import send_mail
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
@@ -40,7 +41,7 @@ class UserViewSet(viewsets.ModelViewSet):
         if request.method == 'GET':
             serializer = self.get_serializer(user)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        elif request.method == 'PATCH':
+        if request.method == 'PATCH':
             serializer = self.get_serializer(
                 user,
                 data=request.data,
@@ -65,7 +66,7 @@ def sign_up(requset):
     send_mail(
         'Код для доступа к токену',
         f'{user.confirmation_code}',
-        'admin@yamdb.com',
+        EMAIL_ADMIN,
         [f'{email}'],
     )
     return Response(serializers.data, status=status.HTTP_200_OK)

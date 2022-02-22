@@ -33,7 +33,7 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Не допустимое имя пользователя'
             )
-        elif name is None or name == '':
+        if name is None or name == '':
             raise serializers.ValidationError('Обязательное поле')
         return name
 
