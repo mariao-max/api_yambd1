@@ -3,10 +3,10 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
-class UserRole: 
-        USER = 'user' 
-        MODERATOR = 'moderator' 
-        ADMIN = 'admin'
+class UserRole:
+    USER = 'user'
+    MODERATOR = 'moderator'
+    ADMIN = 'admin'
 
 
 ROLES = (
@@ -17,24 +17,31 @@ ROLES = (
 
 
 class User(AbstractUser):
+    username = models.CharField(
+        verbose_name='Имя пользователя',
+        max_length=150,
+        blank=False,
+        unique=True
+    )
+    email = models.EmailField(
+        verbose_name='Email пользователя',
+        max_length=254,
+        blank=False,
+        unique=True
+    )
+    first_name = models.CharField(max_length=150, blank=True)
+    last_name = models.CharField(max_length=150, blank=True)
     bio = models.TextField(
         verbose_name='Биография',
         blank=True
     )
     confirmation_code = models.CharField(max_length=255, default='000000')
-    email = models.EmailField(
-        verbose_name='Email пользователя',
-        max_length=60,
-        unique=True
-    )
     role = models.CharField(
         verbose_name='Права доступа',
         max_length=10,
         choices=ROLES,
         default='user'
     )
-    first_name = models.CharField(max_length=150, blank=True)
-
 
     class Meta:
         verbose_name = 'Пользователь'
@@ -51,7 +58,11 @@ class User(AbstractUser):
 
     @property
     def is_admin(self):
-        return self.role == UserRole.ADMIN or self.is_staff or self.is_superuser
+        return (
+            self.role == UserRole.ADMIN
+            or self.is_staff
+            or self.is_superuser
+        )
 
     @property
     def is_moderator(self):

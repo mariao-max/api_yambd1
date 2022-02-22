@@ -1,6 +1,5 @@
 from uuid import uuid4
 
-from api_yamdb.settings import EMAIL_ADMIN
 from django.core.mail import send_mail
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
@@ -9,16 +8,16 @@ from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from reviews.models import Category, Genre, Review, Title, User
 
+from api.filters import TitleFilter
 from api.permissions import UserIsAdmin, UserIsAdminOrReadOnly, UserIsModerator
 from api.serializers import (AuthSerializer, CategorySerializer,
                              CommentSerializer, GenreSerializer,
                              ReviewSerializer, SignUpSerializer,
                              TitleCreateSerializer, TitleSerializer,
                              UserProfileSerializers, UserSerializer)
-
-from .filters import TitleFilter
+from api_yamdb.settings import EMAIL_ADMIN
+from reviews.models import Category, Genre, Review, Title, User
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -58,18 +57,29 @@ def sign_up(requset):
     serializers = SignUpSerializer(data=requset.data)
     serializers.is_valid(raise_exception=True)
     email = serializers.validated_data['email']
-    confirmation_code = uuid4()
-    user, created = User.objects.get_or_create(
-        **serializers.validated_data,
-        confirmation_code=confirmation_code
-    )
-    send_mail(
-        'Код для доступа к токену',
-        f'{user.confirmation_code}',
-        EMAIL_ADMIN,
-        [f'{email}'],
-    )
-    return Response(serializers.data, status=status.HTTP_200_OK)
+    username = serializers.validated_data['username']
+    valid_user = User.objects.filter(email=email, username=username)
+    if valid_user.exists():
+        send_mail(
+            'Код для доступа к токену',
+            f'{valid_user[0].confirmation_code}',
+            EMAIL_ADMIN,
+            [f'{email}'],
+        )
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    if not valid_user.exists():
+        confirmation_code = uuid4()
+        user, created = User.objects.get_or_create(
+            **serializers.validated_data,
+            confirmation_code=confirmation_code
+        )
+        send_mail(
+            'Код для доступа к токену',
+            f'{user.confirmation_code}',
+            EMAIL_ADMIN,
+            [f'{email}'],
+        )
+        return Response(serializers.data, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])

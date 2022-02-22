@@ -1,8 +1,10 @@
+import datetime as dt
 from uuid import uuid4
 
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
+
 from reviews.models import ROLES, Category, Comment, Genre, Review, Title, User
 
 
@@ -61,14 +63,19 @@ class SignUpSerializer(serializers.Serializer):
     def validate(self, data):
         username = data.get('username')
         email = data.get('email')
-
-        if User.objects.filter(username=username).exists():
+        if (
+            User.objects.filter(username=username).exists()
+            and User.objects.get(username=username).email != email
+        ):
             raise serializers.ValidationError(
-                'Пользователь с таким именем уже существует'
+                'Пользователь с таким email уже есть'
             )
-        if User.objects.filter(email=email).exists():
+        if (
+            User.objects.filter(email=email).exists()
+            and User.objects.get(email=email).username != username
+        ):
             raise serializers.ValidationError(
-                'Пользователь с такой почтой уже существует'
+                'Пользователь с таким username уже есть'
             )
         return data
 
@@ -154,6 +161,14 @@ class TitleCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Title
         fields = '__all__'
+
+    def validate_year(self, value):
+        year = dt.date.today().year
+        if not (0 <= value <= year):
+            raise serializers.ValidationError(
+                'Год не может быть больше текущего!'
+            )
+        return value
 
 
 class TitleSerializer(serializers.ModelSerializer):
