@@ -9,8 +9,8 @@ from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-
 from reviews.models import Category, Genre, Review, Title, User
+
 from api.permissions import UserIsAdmin, UserIsAdminOrReadOnly, UserIsModerator
 from api.serializers import (AuthSerializer, CategorySerializer,
                              CommentSerializer, GenreSerializer,
@@ -60,6 +60,8 @@ def sign_up(requset):
     email = serializers.validated_data['email']
     username = serializers.validated_data['username']
     user = User.objects.filter(email=email, username=username)
+    valid_mail = User.objects.filter(email=email)
+    valid_username = User.objects.filter(username=username)
     if user.exists():
         send_mail(
             'Код для доступа к токену',
@@ -68,6 +70,22 @@ def sign_up(requset):
             [f'{email}'],
         )
         return Response(serializers.data, status=status.HTTP_200_OK)
+    if valid_mail.exists() or valid_username.exists():
+        if (
+            valid_username.exists()
+            and User.objects.get(email=email).username != username
+        ):
+            raise ValueError(
+                'Пользователь с таким email уже есть'
+            )
+        elif (
+            valid_username
+            and User.objects.filter(username=username).email != email
+        ):
+            raise ValueError(
+                'Пользователь с таким username уже есть'
+            )
+        return Response(status=status.HTTP_400_BAD_REQUEST)
     if not user.exists():
         confirmation_code = uuid4()
         user, created = User.objects.get_or_create(
