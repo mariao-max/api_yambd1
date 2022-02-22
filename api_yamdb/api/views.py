@@ -1,6 +1,5 @@
 from uuid import uuid4
 
-from api_yamdb.settings import EMAIL_ADMIN
 from django.core.mail import send_mail
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
@@ -9,7 +8,6 @@ from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from reviews.models import Category, Genre, Review, Title, User
 
 from api.filters import TitleFilter
 from api.permissions import UserIsAdmin, UserIsAdminOrReadOnly, UserIsModerator
@@ -18,6 +16,8 @@ from api.serializers import (AuthSerializer, CategorySerializer,
                              ReviewSerializer, SignUpSerializer,
                              TitleCreateSerializer, TitleSerializer,
                              UserProfileSerializers, UserSerializer)
+from api_yamdb.settings import EMAIL_ADMIN
+from reviews.models import Category, Genre, Review, Title, User
 
 
 class UserViewSet(viewsets.ModelViewSet):
