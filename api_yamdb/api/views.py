@@ -61,6 +61,7 @@ def sign_up(requset):
     valid_mail = User.objects.filter(email=email)
     valid_username = User.objects.filter(username=username)
     if User.objects.filter(email=email, username=username).exists():
+        user = User.objects.filter(email=email, username=username)
         send_mail(
             'Код для доступа к токену',
             f'{user[0].confirmation_code}',
