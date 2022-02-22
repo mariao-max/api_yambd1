@@ -58,18 +58,29 @@ def sign_up(requset):
     serializers = SignUpSerializer(data=requset.data)
     serializers.is_valid(raise_exception=True)
     email = serializers.validated_data['email']
-    confirmation_code = uuid4()
-    user, created = User.objects.get_or_create(
-        **serializers.validated_data,
-        confirmation_code=confirmation_code
-    )
-    send_mail(
-        'Код для доступа к токену',
-        f'{user.confirmation_code}',
-        EMAIL_ADMIN,
-        [f'{email}'],
-    )
-    return Response(serializers.data, status=status.HTTP_200_OK)
+    username = serializers.validated_data['username']
+    user = User.objects.filter(email=email, username=username)
+    if user.exists():
+        send_mail(
+            'Код для доступа к токену',
+            f'{user[0].confirmation_code}',
+            EMAIL_ADMIN,
+            [f'{email}'],
+        )
+        return Response(serializers.data, status=status.HTTP_200_OK)
+    if not user.exists():
+        confirmation_code = uuid4()
+        user, created = User.objects.get_or_create(
+            **serializers.validated_data,
+            confirmation_code=confirmation_code
+        )
+        send_mail(
+            'Код для доступа к токену',
+            f'{user.confirmation_code}',
+            EMAIL_ADMIN,
+            [f'{email}'],
+        )
+        return Response(serializers.data, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])

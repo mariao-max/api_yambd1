@@ -17,23 +17,32 @@ ROLES = (
 
 
 class User(AbstractUser):
+    username = models.CharField(
+        verbose_name='Имя пользователя',
+        max_length=150,
+        blank=False,
+        unique=True
+    )
+    email = models.EmailField(
+        verbose_name='Email пользователя',
+        max_length=254,
+        blank=False,
+        unique=True
+    )
+    first_name = models.CharField(max_length=150, blank=True)
+    last_name = models.CharField(max_length=150, blank=True)
     bio = models.TextField(
         verbose_name='Биография',
         blank=True
     )
     confirmation_code = models.CharField(max_length=255, default='000000')
-    email = models.EmailField(
-        verbose_name='Email пользователя',
-        max_length=60,
-        unique=True
-    )
     role = models.CharField(
         verbose_name='Права доступа',
         max_length=10,
         choices=ROLES,
         default='user'
     )
-    first_name = models.CharField(max_length=150, blank=True)
+
 
 
     class Meta:

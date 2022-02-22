@@ -1,3 +1,4 @@
+from datetime import datetime as dt
 from uuid import uuid4
 
 from django.core.exceptions import ValidationError
@@ -57,20 +58,6 @@ class SignUpSerializer(serializers.Serializer):
                 'Не допустимое имя пользователя'
             )
         return name
-
-    def validate(self, data):
-        username = data.get('username')
-        email = data.get('email')
-
-        if User.objects.filter(username=username).exists():
-            raise serializers.ValidationError(
-                'Пользователь с таким именем уже существует'
-            )
-        if User.objects.filter(email=email).exists():
-            raise serializers.ValidationError(
-                'Пользователь с такой почтой уже существует'
-            )
-        return data
 
 
 class AuthSerializer(serializers.Serializer):
@@ -153,6 +140,12 @@ class TitleCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Title
         fields = '__all__'
+
+    def validate_year(self, value):
+        year = dt.date.today().year
+        if not (0 <= value <= year):
+            raise serializers.ValidationError('Год не может быть больше текущего!')
+        return value
 
 
 class TitleSerializer(serializers.ModelSerializer):
