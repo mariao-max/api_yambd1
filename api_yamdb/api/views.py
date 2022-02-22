@@ -11,14 +11,13 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from reviews.models import Category, Genre, Review, Title, User
 
+from api.filters import TitleFilter
 from api.permissions import UserIsAdmin, UserIsAdminOrReadOnly, UserIsModerator
 from api.serializers import (AuthSerializer, CategorySerializer,
                              CommentSerializer, GenreSerializer,
                              ReviewSerializer, SignUpSerializer,
                              TitleCreateSerializer, TitleSerializer,
                              UserProfileSerializers, UserSerializer)
-
-from .filters import TitleFilter
 
 
 class UserViewSet(viewsets.ModelViewSet):
