@@ -17,8 +17,7 @@ from api.serializers import (AuthSerializer, CategorySerializer,
                              ReviewSerializer, SignUpSerializer,
                              TitleCreateSerializer, TitleSerializer,
                              UserProfileSerializers, UserSerializer)
-
-from .filters import TitleFilter
+from api.filters import TitleFilter
 
 
 class UserViewSet(viewsets.ModelViewSet):
