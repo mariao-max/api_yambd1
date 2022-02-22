@@ -59,8 +59,6 @@ def sign_up(requset):
     email = serializers.validated_data['email']
     username = serializers.validated_data['username']
     valid_mail = User.objects.filter(email=email)
-    valid_username = User.objects.filter(username=username)
-    valid_user = User.objects.filter(email=email, username=username).exists()
     if valid_user.exists():
         send_mail(
             'Код для доступа к токену',
