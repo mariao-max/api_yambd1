@@ -144,7 +144,9 @@ class TitleCreateSerializer(serializers.ModelSerializer):
     def validate_year(self, value):
         year = dt.date.today().year
         if not (0 <= value <= year):
-            raise serializers.ValidationError('Год не может быть больше текущего!')
+            raise serializers.ValidationError(
+                'Год не может быть больше текущего!'
+            )
         return value
 
 
