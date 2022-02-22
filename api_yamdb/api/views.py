@@ -58,7 +58,7 @@ def sign_up(requset):
     serializers.is_valid(raise_exception=True)
     email = serializers.validated_data['email']
     username = serializers.validated_data['username']
-    valid_mail = User.objects.filter(email=email)
+    valid_user = User.objects.filter(email=email, username=username)
     if valid_user.exists():
         send_mail(
             'Код для доступа к токену',
@@ -66,7 +66,7 @@ def sign_up(requset):
             EMAIL_ADMIN,
             [f'{email}'],
         )
-        return Response(serializers.data, status=status.HTTP_200_OK)
+        return Response(serializers.data, status=status.HTTP_400_BAD_REQUEST)
     if not valid_user.exists():
         confirmation_code = uuid4()
         user, created = User.objects.get_or_create(
