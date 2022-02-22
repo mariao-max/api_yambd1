@@ -154,8 +154,8 @@ class Comment(models.Model):
     )
 
     class Meta:
-        verbose_name = 'Коммаентарий'
-        verbose_name_plural = 'Коммаентарии'
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
 
     def __str__(self):
         return self.text
