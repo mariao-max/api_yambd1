@@ -3,10 +3,10 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
-class UserRole: 
-        USER = 'user' 
-        MODERATOR = 'moderator' 
-        ADMIN = 'admin'
+class UserRole:
+    USER = 'user'
+    MODERATOR = 'moderator'
+    ADMIN = 'admin'
 
 
 ROLES = (
@@ -44,7 +44,6 @@ class User(AbstractUser):
     )
 
 
-
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
@@ -60,7 +59,11 @@ class User(AbstractUser):
 
     @property
     def is_admin(self):
-        return self.role == UserRole.ADMIN or self.is_staff or self.is_superuser
+        return (
+            self.role == UserRole.ADMIN
+            or self.is_staff
+            or self.is_superuser
+        )
 
     @property
     def is_moderator(self):
