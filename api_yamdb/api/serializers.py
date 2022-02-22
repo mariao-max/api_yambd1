@@ -1,10 +1,9 @@
-from datetime import datetime as dt
+import datetime as dt
 from uuid import uuid4
 
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-
 from reviews.models import ROLES, Category, Comment, Genre, Review, Title, User
 
 
@@ -54,11 +53,27 @@ class SignUpSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=150)
 
     def validate_username(self, name):
+        user = User.objects.filter(username=name)
         if name == 'me':
             raise serializers.ValidationError(
                 'Не допустимое имя пользователя'
             )
         return name
+
+    def validate(self, data):
+        username = data.get('username')
+        email = data.get('email')
+        valid_username = User.objects.filter(username=username)
+        valid_email = User.objects.filter(email=email)
+        if valid_username.exists() and valid_username.email != email:
+            raise serializers.ValidationError(
+                'Пользователь с таким username уже существует'
+            )
+        if valid_email.exists() and valid_email.username != username:
+            raise serializers.ValidationError(
+                'Пользователь с таким email уже существует'
+            )
+        return data
 
 
 class AuthSerializer(serializers.Serializer):
