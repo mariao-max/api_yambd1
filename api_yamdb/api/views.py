@@ -66,7 +66,7 @@ def sign_up(requset):
             EMAIL_ADMIN,
             [f'{email}'],
         )
-        return Response(serializers.data, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
     if not valid_user.exists():
         confirmation_code = uuid4()
         user, created = User.objects.get_or_create(
