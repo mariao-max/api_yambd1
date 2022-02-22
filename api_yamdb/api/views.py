@@ -60,41 +60,28 @@ def sign_up(requset):
     username = serializers.validated_data['username']
     valid_mail = User.objects.filter(email=email)
     valid_username = User.objects.filter(username=username)
-    if User.objects.filter(email=email, username=username).exists():
+    valid_user = User.objects.filter(email=email, username=username).exists()
+    if valid_user.exists():
         send_mail(
             'Код для доступа к токену',
-            f'{user[0].confirmation_code}',
+            f'{valid_user[0].confirmation_code}',
             EMAIL_ADMIN,
             [f'{email}'],
         )
-    if valid_mail.exists() or valid_username.exists():
-        if (
-            valid_username.exists()
-            and User.objects.get(email=email).username != username
-        ):
-            raise ValueError(
-                'Пользователь с таким email уже есть'
-            )
-        elif (
-            valid_username
-            and User.objects.filter(username=username).email != email
-        ):
-            raise ValueError(
-                'Пользователь с таким username уже есть'
-            )
-        return Response(status=status.HTTP_400_BAD_REQUEST)
-    confirmation_code = uuid4()
-    user, created = User.objects.get_or_create(
-        **serializers.validated_data,
-        confirmation_code=confirmation_code
-    )
-    send_mail(
-        'Код для доступа к токену',
-        f'{user.confirmation_code}',
-        EMAIL_ADMIN,
-        [f'{email}'],
-    )
-    return Response(serializers.data, status=status.HTTP_200_OK)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+    if not valid_user.exists():
+        confirmation_code = uuid4()
+        user, created = User.objects.get_or_create(
+            **serializers.validated_data,
+            confirmation_code=confirmation_code
+        )
+        send_mail(
+            'Код для доступа к токену',
+            f'{user.confirmation_code}',
+            EMAIL_ADMIN,
+            [f'{email}'],
+        )
+        return Response(serializers.data, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
