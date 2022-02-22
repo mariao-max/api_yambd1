@@ -1,6 +1,5 @@
 from uuid import uuid4
 
-from api_yamdb.settings import EMAIL_ADMIN
 from django.core.mail import send_mail
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
@@ -17,6 +16,7 @@ from api.serializers import (AuthSerializer, CategorySerializer,
                              ReviewSerializer, SignUpSerializer,
                              TitleCreateSerializer, TitleSerializer,
                              UserProfileSerializers, UserSerializer)
+from api_yamdb.settings import EMAIL_ADMIN
 from reviews.models import Category, Genre, Review, Title, User
 
 
