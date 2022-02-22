@@ -64,12 +64,14 @@ class SignUpSerializer(serializers.Serializer):
         username = data.get('username')
         email = data.get('email')
         valid_username = User.objects.filter(username=username)
+        get_valid_username = User.objects.get(username=username)
         valid_email = User.objects.filter(email=email)
-        if valid_username.exists() and valid_username.email != email:
+        get_valid_email = User.objects.get(email=email)
+        if valid_username.exists() and get_valid_username.email != email:
             raise serializers.ValidationError(
                 'Пользователь с таким username уже существует'
             )
-        if valid_email.exists() and valid_email.username != username:
+        if valid_email.exists() and get_valid_email.username != username:
             raise serializers.ValidationError(
                 'Пользователь с таким email уже существует'
             )
