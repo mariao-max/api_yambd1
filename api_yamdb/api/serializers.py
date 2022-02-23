@@ -4,7 +4,6 @@ from uuid import uuid4
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-
 from reviews.models import ROLES, Category, Comment, Genre, Review, Title, User
 
 
@@ -129,10 +128,10 @@ class CommentSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(slug_field='username',
                                           read_only=True)
     review = serializers.SlugRelatedField(slug_field='text', read_only=True)
-    title= serializers.SlugRelatedField(slug_field='name', read_only=True)
 
     class Meta:
         fields = '__all__'
+        read_only_fields = ('review',)
         model = Comment
 
 
